@@ -20,8 +20,18 @@ interface OAuthProvider {
 }
 
 const PROVIDERS: OAuthProvider[] = [
-  { id: 'google', label: 'Google', icon: <GoogleMark />, strategy: 'oauth_google' },
-  { id: 'github', label: 'GitHub', icon: <GitHubMark />, strategy: 'oauth_github' },
+  {
+    id: 'google',
+    label: 'Google',
+    icon: <GoogleMark />,
+    strategy: 'oauth_google',
+  },
+  {
+    id: 'github',
+    label: 'GitHub',
+    icon: <GitHubMark />,
+    strategy: 'oauth_github',
+  },
 ];
 
 export function OAuthButtons() {

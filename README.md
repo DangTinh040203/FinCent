@@ -88,7 +88,7 @@ pnpm dev
 
 # Or individually
 pnpm dev:fe   # http://localhost:3001
-pnpm dev:be   # http://localhost:8000/api  (Swagger UI at /docs)
+pnpm dev:be   # http://localhost:8000/api/v1  (Swagger UI at /docs)
 ```
 
 ## Scripts

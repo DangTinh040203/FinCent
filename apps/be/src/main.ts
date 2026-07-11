@@ -3,6 +3,7 @@ import {
   type INestApplication,
   Logger,
   ValidationPipe,
+  VersioningType,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
@@ -27,6 +28,10 @@ class BootstrapApplication {
     const apiPrefix = configService.get<string>(Env.API_PREFIX, 'api');
 
     app.setGlobalPrefix(apiPrefix);
+    app.enableVersioning({
+      type: VersioningType.URI,
+      defaultVersion: '1',
+    });
 
     this.setupMiddleware(app, configService);
 
@@ -36,7 +41,7 @@ class BootstrapApplication {
 
     await app.listen(port);
     Logger.log(
-      `🚀 Server running on http://localhost:${port}/${apiPrefix}`,
+      `🚀 Server running on http://localhost:${port}/${apiPrefix}/v1`,
       BootstrapApplication.name,
     );
   }
