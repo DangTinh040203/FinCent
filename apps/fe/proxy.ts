@@ -2,22 +2,23 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import type { NextFetchEvent, NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-// Auth pages: signed-in users should be bounced away from these.
-const isAuthRoute = createRouteMatcher(['/sign-in(.*)']);
+const isPublicRoute = createRouteMatcher([
+  '/sign-in(.*)',
+  '/terms',
+  '/privacy',
+]);
 
-// App pages that require a session. Extend this as protected routes are added
-// (e.g. '/dashboard(.*)', '/settings(.*)').
-const isProtectedRoute = createRouteMatcher(['/dashboard(.*)']);
+const isSignInRoute = createRouteMatcher(['/sign-in']);
 
 const clerkHandler = clerkMiddleware(async (auth, req) => {
   const { isAuthenticated } = await auth();
   const { pathname } = req.nextUrl;
 
-  if (isAuthenticated && isAuthRoute(req)) {
+  if (isAuthenticated && isSignInRoute(req)) {
     return NextResponse.redirect(new URL('/', req.url));
   }
 
-  if (!isAuthenticated && isProtectedRoute(req)) {
+  if (!isAuthenticated && !isPublicRoute(req)) {
     const signInUrl = new URL('/sign-in', req.url);
     signInUrl.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(signInUrl);

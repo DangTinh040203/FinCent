@@ -15,7 +15,6 @@ export class UserCreatedStrategy implements IClerkWebhookStrategy {
   constructor(
     @Inject(USER_REPOSITORY_TOKEN)
     private readonly userRepository: IUserRepository,
-
     private readonly eventEmitter: EventEmitter2,
   ) {}
 

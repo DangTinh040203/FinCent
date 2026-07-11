@@ -194,7 +194,7 @@ export default function SignInPage() {
               >
                 Privacy Policy
               </Link>
-              . Your financial data stays yours — export or delete it anytime.
+              . Your financial data stays yours - export or delete it anytime.
             </p>
           </div>
         </div>
