@@ -1,5 +1,3 @@
-import '@/libs/types';
-
 import {
   BadRequestException,
   type INestApplication,
