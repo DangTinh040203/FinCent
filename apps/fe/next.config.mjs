@@ -3,6 +3,11 @@ const nextConfig = {
   output: 'standalone',
   transpilePackages: ['@repo/ui'],
 
+  experimental: {
+    // Tree-shake heavy libraries imported by many modules.
+    optimizePackageImports: ['@clerk/nextjs'],
+  },
+
   images: {
     remotePatterns: [
       {

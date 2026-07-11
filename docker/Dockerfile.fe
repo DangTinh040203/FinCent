@@ -5,6 +5,7 @@
 # must be supplied as build args:
 #   docker build -f docker/Dockerfile.fe \
 #     --build-arg NEXT_PUBLIC_API_URL=https://api.example.com/api \
+#     --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_xxx \
 #     -t fincent-fe .
 
 FROM node:20-alpine AS base
@@ -18,9 +19,16 @@ RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
     pnpm install --frozen-lockfile
 
 ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+ARG NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+ARG NEXT_PUBLIC_REDIRECT_URL=/sign-in/sso-callback
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY \
+    NEXT_PUBLIC_CLERK_SIGN_IN_URL=$NEXT_PUBLIC_CLERK_SIGN_IN_URL \
+    NEXT_PUBLIC_REDIRECT_URL=$NEXT_PUBLIC_REDIRECT_URL \
     NEXT_TELEMETRY_DISABLED=1 \
-    NODE_ENV=production
+    NODE_ENV=production \
+    SKIP_ENV_VALIDATION=true
 
 RUN pnpm --filter @repo/fe build
 

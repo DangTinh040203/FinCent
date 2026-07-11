@@ -54,20 +54,6 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
 
-  # Public tunnel to the host-run frontend (set NGROK_AUTHTOKEN in your env).
-  # Inspector UI: http://localhost:4040
-  ngrok:
-    image: ngrok/ngrok:latest
-    container_name: fincent_ngrok
-    restart: unless-stopped
-    command: http host.docker.internal:3001
-    environment:
-      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
-    ports:
-      - "4040:4040"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-
 volumes:
   postgres_data:
   redis_data:

@@ -216,6 +216,16 @@
   }
 }
 
+/* Indeterminate progress sweep — a gradient shuttling across a track. */
+@keyframes fincent-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
 .fincent-reveal {
   opacity: 0;
   transform: translateY(18px);
@@ -236,7 +246,8 @@
   }
   [class*='animate-'],
   [style*='fincent-breathe'],
-  [style*='fincent-drift'] {
+  [style*='fincent-drift'],
+  [style*='fincent-sweep'] {
     animation: none !important;
   }
 }
