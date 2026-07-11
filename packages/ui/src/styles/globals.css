@@ -135,42 +135,42 @@
 }
 
 /* ============================================================================
- * TBH Design System tokens — see .agents/skills/tbh-design-system
+ * FinCent brand design tokens — see .agents/skills/tbh-design-system
  * Dark, infrastructure-led brand layer. Exposes bg-ink / text-bright /
  * border-hairline / font-display / font-mono / from-accent-* utilities.
  * ========================================================================== */
 :root {
-  --tbh-ink: #060708;
-  --tbh-carbon: #0d0f12;
-  --tbh-panel: #13161b;
-  --tbh-white: #ffffff;
-  --tbh-bright: #f4f6f8;
-  --tbh-muted: #888e97;
-  --tbh-muted-2: #5e646d;
-  --tbh-hairline: #1f2228;
-  --tbh-hairline-2: #2c3037;
-  --tbh-green: #5dcaa5;
-  --tbh-indigo: #7f77dd;
-  --tbh-blue: #85b7eb;
-  --tbh-pink: #d4537e;
-  --tbh-sand: #b4b2a9;
-  --tbh-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --fincent-ink: #060708;
+  --fincent-carbon: #0d0f12;
+  --fincent-panel: #13161b;
+  --fincent-white: #ffffff;
+  --fincent-bright: #f4f6f8;
+  --fincent-muted: #888e97;
+  --fincent-muted-2: #5e646d;
+  --fincent-hairline: #1f2228;
+  --fincent-hairline-2: #2c3037;
+  --fincent-green: #5dcaa5;
+  --fincent-indigo: #7f77dd;
+  --fincent-blue: #85b7eb;
+  --fincent-pink: #d4537e;
+  --fincent-sand: #b4b2a9;
+  --fincent-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @theme inline {
-  --color-ink: var(--tbh-ink);
-  --color-carbon: var(--tbh-carbon);
-  --color-panel: var(--tbh-panel);
-  --color-bright: var(--tbh-bright);
-  --color-muted-fg: var(--tbh-muted);
-  --color-muted-2: var(--tbh-muted-2);
-  --color-hairline: var(--tbh-hairline);
-  --color-hairline-2: var(--tbh-hairline-2);
-  --color-accent-green: var(--tbh-green);
-  --color-accent-indigo: var(--tbh-indigo);
-  --color-accent-blue: var(--tbh-blue);
-  --color-accent-pink: var(--tbh-pink);
-  --color-accent-sand: var(--tbh-sand);
+  --color-ink: var(--fincent-ink);
+  --color-carbon: var(--fincent-carbon);
+  --color-panel: var(--fincent-panel);
+  --color-bright: var(--fincent-bright);
+  --color-muted-fg: var(--fincent-muted);
+  --color-muted-2: var(--fincent-muted-2);
+  --color-hairline: var(--fincent-hairline);
+  --color-hairline-2: var(--fincent-hairline-2);
+  --color-accent-green: var(--fincent-green);
+  --color-accent-indigo: var(--fincent-indigo);
+  --color-accent-blue: var(--fincent-blue);
+  --color-accent-pink: var(--fincent-pink);
+  --color-accent-sand: var(--fincent-sand);
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-space-grotesk), system-ui, sans-serif;
@@ -181,18 +181,18 @@
   --radius-card: 16px;
   --radius-pill: 999px;
 
-  --ease-tbh: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-fincent: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Opt a surface into the TBH dark shell via class="tbh". */
-.tbh {
-  background: var(--tbh-ink);
-  color: var(--tbh-bright);
+/* Opt a surface into the FinCent dark shell via class="fincent". */
+.fincent {
+  background: var(--fincent-ink);
+  color: var(--fincent-bright);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
 }
 
-@keyframes tbh-breathe {
+@keyframes fincent-breathe {
   0%,
   100% {
     opacity: 1;
@@ -204,7 +204,7 @@
   }
 }
 
-@keyframes tbh-drift {
+@keyframes fincent-drift {
   0%,
   100% {
     transform: translate3d(0, 0, 0) scale(1);
@@ -216,27 +216,27 @@
   }
 }
 
-.tbh-reveal {
+.fincent-reveal {
   opacity: 0;
   transform: translateY(18px);
   transition:
-    opacity 0.5s var(--tbh-ease),
-    transform 0.5s var(--tbh-ease);
+    opacity 0.5s var(--fincent-ease),
+    transform 0.5s var(--fincent-ease);
 }
-.tbh-reveal.is-in {
+.fincent-reveal.is-in {
   opacity: 1;
   transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tbh-reveal {
+  .fincent-reveal {
     opacity: 1;
     transform: none;
     transition: none;
   }
   [class*='animate-'],
-  [style*='tbh-breathe'],
-  [style*='tbh-drift'] {
+  [style*='fincent-breathe'],
+  [style*='fincent-drift'] {
     animation: none !important;
   }
 }

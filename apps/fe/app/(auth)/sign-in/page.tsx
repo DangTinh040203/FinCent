@@ -13,7 +13,6 @@ export const metadata: Metadata = {
   description: 'Sign in to FinCent with Google or GitHub.',
 };
 
-/* Left brand panel — desktop only. */
 function BrandPanel() {
   return (
     <aside
@@ -22,7 +21,6 @@ function BrandPanel() {
         lg:flex lg:flex-col lg:justify-between lg:p-14
       `}
     >
-      {/* Ambient accent glow (the one colored element) */}
       <div
         aria-hidden='true'
         className={`
@@ -30,7 +28,7 @@ function BrandPanel() {
           rounded-full opacity-70 blur-3xl
           [background:radial-gradient(45%_45%_at_50%_50%,rgba(93,202,165,0.22),transparent_70%),radial-gradient(45%_45%_at_70%_60%,rgba(133,183,235,0.18),transparent_70%),radial-gradient(40%_40%_at_40%_80%,rgba(212,83,126,0.16),transparent_70%)]
         `}
-        style={{ animation: 'tbh-drift 14s var(--ease-tbh) infinite' }}
+        style={{ animation: 'fincent-drift 14s var(--ease-fincent) infinite' }}
       />
       <div className='relative z-10'>
         <Wordmark />
@@ -59,7 +57,6 @@ function BrandPanel() {
         </p>
       </div>
 
-      {/* Safe-to-Spend teaser */}
       <Card className='relative z-10 w-full max-w-sm gap-0 py-5'>
         <CardContent className='px-5'>
           <div className='flex items-center justify-between'>
@@ -79,7 +76,7 @@ function BrandPanel() {
             >
               <span
                 className='bg-accent-green h-[6px] w-[6px] rounded-full'
-                style={{ animation: 'tbh-breathe 2.4s var(--ease-tbh) infinite' }}
+                style={{ animation: 'fincent-breathe 2.4s var(--ease-fincent) infinite' }}
               />
               On track
             </span>
@@ -118,13 +115,11 @@ export default function SignInPage() {
     `}>
       <BrandPanel />
 
-      {/* Right — sign-in form */}
       <section className={`
         relative flex flex-col px-5 py-8
         sm:px-8
         lg:px-14 lg:py-12
       `}>
-        {/* Top bar: brand shows on mobile (panel hidden < lg); toggle always. */}
         <header className='flex items-center justify-between'>
           <div className='lg:invisible'>
             <Wordmark />
@@ -161,7 +156,6 @@ export default function SignInPage() {
               <OAuthButtons />
             </div>
 
-            {/* Divider */}
             <div className='mt-7 flex items-center gap-4' aria-hidden='true'>
               <Separator className='flex-1' />
               <span
