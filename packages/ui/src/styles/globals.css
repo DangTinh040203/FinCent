@@ -45,6 +45,43 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+/* Dark theme tuned to the TBH palette (see .agents/skills/tbh-design-system).
+   next-themes toggles the `.dark` class on <html>; defaultTheme is dark. */
+.dark {
+  --background: #060708;
+  --foreground: #f4f6f8;
+  --card: #13161b;
+  --card-foreground: #f4f6f8;
+  --popover: #13161b;
+  --popover-foreground: #f4f6f8;
+  --primary: #f4f6f8;
+  --primary-foreground: #0d0f12;
+  --secondary: #1f2228;
+  --secondary-foreground: #f4f6f8;
+  --muted: #15181d;
+  --muted-foreground: #888e97;
+  --accent: #1f2228;
+  --accent-foreground: #f4f6f8;
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: #f4f6f8;
+  --border: #1f2228;
+  --input: #2c3037;
+  --ring: #5e646d;
+  --chart-1: oklch(0.72 0.13 165);
+  --chart-2: oklch(0.7 0.11 245);
+  --chart-3: oklch(0.62 0.16 3);
+  --chart-4: oklch(0.68 0.13 300);
+  --chart-5: oklch(0.78 0.05 90);
+  --sidebar: #0d0f12;
+  --sidebar-foreground: #f4f6f8;
+  --sidebar-primary: #f4f6f8;
+  --sidebar-primary-foreground: #0d0f12;
+  --sidebar-accent: #1f2228;
+  --sidebar-accent-foreground: #f4f6f8;
+  --sidebar-border: #1f2228;
+  --sidebar-ring: #5e646d;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -95,6 +132,113 @@
 
 @utility container {
   @apply mx-auto px-2 md:px-4;
+}
+
+/* ============================================================================
+ * FinCent brand design tokens — see .agents/skills/tbh-design-system
+ * Dark, infrastructure-led brand layer. Exposes bg-ink / text-bright /
+ * border-hairline / font-display / font-mono / from-accent-* utilities.
+ * ========================================================================== */
+:root {
+  --fincent-ink: #060708;
+  --fincent-carbon: #0d0f12;
+  --fincent-panel: #13161b;
+  --fincent-white: #ffffff;
+  --fincent-bright: #f4f6f8;
+  --fincent-muted: #888e97;
+  --fincent-muted-2: #5e646d;
+  --fincent-hairline: #1f2228;
+  --fincent-hairline-2: #2c3037;
+  --fincent-green: #5dcaa5;
+  --fincent-indigo: #7f77dd;
+  --fincent-blue: #85b7eb;
+  --fincent-pink: #d4537e;
+  --fincent-sand: #b4b2a9;
+  --fincent-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@theme inline {
+  --color-ink: var(--fincent-ink);
+  --color-carbon: var(--fincent-carbon);
+  --color-panel: var(--fincent-panel);
+  --color-bright: var(--fincent-bright);
+  --color-muted-fg: var(--fincent-muted);
+  --color-muted-2: var(--fincent-muted-2);
+  --color-hairline: var(--fincent-hairline);
+  --color-hairline-2: var(--fincent-hairline-2);
+  --color-accent-green: var(--fincent-green);
+  --color-accent-indigo: var(--fincent-indigo);
+  --color-accent-blue: var(--fincent-blue);
+  --color-accent-pink: var(--fincent-pink);
+  --color-accent-sand: var(--fincent-sand);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-space-grotesk), system-ui, sans-serif;
+  --font-body: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  --radius-btn: 10px;
+  --radius-card: 16px;
+  --radius-pill: 999px;
+
+  --ease-fincent: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Opt a surface into the FinCent dark shell via class="fincent". */
+.fincent {
+  background: var(--fincent-ink);
+  color: var(--fincent-bright);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes fincent-breathe {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 11px 1px rgba(255, 255, 255, 0.7);
+  }
+  50% {
+    opacity: 0.55;
+    box-shadow: 0 0 4px 0 rgba(255, 255, 255, 0.3);
+  }
+}
+
+@keyframes fincent-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate3d(0, -4%, 0) scale(1.06);
+    opacity: 0.8;
+  }
+}
+
+.fincent-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.5s var(--fincent-ease),
+    transform 0.5s var(--fincent-ease);
+}
+.fincent-reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fincent-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  [class*='animate-'],
+  [style*='fincent-breathe'],
+  [style*='fincent-drift'] {
+    animation: none !important;
+  }
 }
 
 .dark {
