@@ -12,6 +12,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.36.5",
+    "@clerk/shared": "^4.3.0",
     "@repo/ui": "workspace:*",
     "@t3-oss/env-nextjs": "^0.13.8",
     "next": "16.2.9",

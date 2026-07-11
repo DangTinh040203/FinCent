@@ -1,7 +1,24 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
-  "globalEnv": ["NODE_ENV", "FE_URL", "PORT", "NEXT_PUBLIC_API_URL"],
+  "globalEnv": [
+    "NODE_ENV",
+    "FE_URL",
+    "PORT",
+    "API_PREFIX",
+    "NEXT_PUBLIC_API_URL",
+    "SKIP_ENV_VALIDATION",
+    "DATABASE_URL",
+    "DIRECT_URL",
+    "REDIS_URL",
+    "REDIS_NAMESPACE",
+    "CLERK_SECRET_KEY",
+    "CLERK_PUBLISHABLE_KEY",
+    "CLERK_WEBHOOK_SECRET",
+    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+    "NEXT_PUBLIC_CLERK_SIGN_IN_URL",
+    "NEXT_PUBLIC_REDIRECT_URL"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

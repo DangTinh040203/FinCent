@@ -1,11 +1,14 @@
 'use client';
 
+import { useSignIn } from '@clerk/nextjs';
+import { type OAuthStrategy } from '@clerk/shared/types';
 import { Button } from '@repo/ui/components/button';
 import { type ReactNode, useState } from 'react';
 
 import { GitHubMark } from '@/components/icon/github-mark';
 import { GoogleMark } from '@/components/icon/google-mark';
 import { Env } from '@/configs/env.config';
+import { handleClerkError } from '@/libs/clerk-toast';
 
 type Provider = 'google' | 'github';
 
@@ -13,38 +16,48 @@ interface OAuthProvider {
   id: Provider;
   label: string;
   icon: ReactNode;
+  strategy: OAuthStrategy;
 }
 
 const PROVIDERS: OAuthProvider[] = [
-  { id: 'google', label: 'Google', icon: <GoogleMark /> },
-  { id: 'github', label: 'GitHub', icon: <GitHubMark /> },
+  { id: 'google', label: 'Google', icon: <GoogleMark />, strategy: 'oauth_google' },
+  { id: 'github', label: 'GitHub', icon: <GitHubMark />, strategy: 'oauth_github' },
 ];
 
-function startOAuth(provider: Provider) {
-  const target = `${Env.NEXT_PUBLIC_API_URL.replace(/\/$/, '')}/auth/${provider}`;
-  window.location.assign(target);
-}
-
 export function OAuthButtons() {
+  const { isLoaded, signIn } = useSignIn();
   const [pending, setPending] = useState<Provider | null>(null);
 
-  const handle = (provider: Provider) => {
-    if (pending) return;
-    setPending(provider);
-    startOAuth(provider);
+  const handle = async (provider: OAuthProvider) => {
+    if (!isLoaded || pending) return;
+
+    setPending(provider.id);
+
+    try {
+      await signIn.authenticateWithRedirect({
+        strategy: provider.strategy,
+        redirectUrl: Env.NEXT_PUBLIC_REDIRECT_URL,
+        redirectUrlComplete: '/',
+      });
+    } catch (error) {
+      handleClerkError(error, {
+        fallbackMessage: `Could not continue with ${provider.label}. Please try again.`,
+      });
+      setPending(null);
+    }
   };
 
   return (
     <div className='flex flex-col gap-3'>
-      {PROVIDERS.map(({ id, label, icon }) => (
+      {PROVIDERS.map((provider) => (
         <Button
-          key={id}
+          key={provider.id}
           type='button'
           variant='outline'
-          onClick={() => handle(id)}
-          disabled={pending !== null}
-          aria-label={`Continue with ${label}`}
-          data-provider={id}
+          onClick={() => handle(provider)}
+          disabled={!isLoaded || pending !== null}
+          aria-label={`Continue with ${provider.label}`}
+          data-provider={provider.id}
           className={`
             ease-fincent h-auto min-h-[54px] w-full justify-center gap-3
             rounded-[10px] font-mono text-[13px] font-medium tracking-[0.06em]
@@ -54,7 +67,7 @@ export function OAuthButtons() {
           `}
         >
           <span className='flex h-5 w-5 shrink-0 items-center justify-center'>
-            {pending === id ? (
+            {pending === provider.id ? (
               <span
                 aria-hidden='true'
                 className={`
@@ -63,10 +76,10 @@ export function OAuthButtons() {
                 `}
               />
             ) : (
-              icon
+              provider.icon
             )}
           </span>
-          Continue with {label}
+          Continue with {provider.label}
         </Button>
       ))}
     </div>

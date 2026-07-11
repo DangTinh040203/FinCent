@@ -1,5 +1,7 @@
 import '@repo/ui/globals.css';
 
+import { ClerkProvider } from '@clerk/nextjs';
+import { Toaster } from '@repo/ui/components/sonner';
 import { ThemeProvider } from '@repo/ui/components/theme-provider';
 import { type Metadata } from 'next';
 import { type ReactNode } from 'react';
@@ -14,20 +16,23 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang='en' suppressHydrationWarning className={fontVariables}>
-      <body
-        className={`
-          bg-background text-foreground min-h-dvh font-sans antialiased
-        `}
-      >
-        <ThemeProvider
-          attribute='class'
-          defaultTheme='dark'
-          disableTransitionOnChange
+    <ClerkProvider signInFallbackRedirectUrl='/' afterSignOutUrl='/sign-in'>
+      <html lang='en' suppressHydrationWarning className={fontVariables}>
+        <body
+          className={`
+            bg-background text-foreground min-h-dvh font-sans antialiased
+          `}
         >
-          {children}
-        </ThemeProvider>
-      </body>
-    </html>
+          <ThemeProvider
+            attribute='class'
+            defaultTheme='dark'
+            disableTransitionOnChange
+          >
+            <Toaster richColors />
+            {children}
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
