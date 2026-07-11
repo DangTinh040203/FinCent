@@ -1,0 +1,62 @@
+# Production compose — runs ON the VM (copied to /opt/fincent/docker-compose.yml).
+# Images are built/pushed by the deploy pipeline, then retagged to the short
+# local names below. Nothing is built here — hence pull_policy: never.
+#
+# Required env (exported before `docker compose`):
+#   IMAGE_TAG = <short git sha>   (falls back to `latest`)
+#
+# Runtime secrets live in /opt/fincent/.env on the VM (chmod 600, NOT committed).
+
+name: fincent
+
+services:
+  fe:
+    image: fincent/fe:${IMAGE_TAG:-latest}
+    pull_policy: never
+    restart: unless-stopped
+    expose:
+      - "3001"
+    healthcheck:
+      # Next binds IPv4 0.0.0.0 only; `localhost` resolves to ::1 (IPv6) in alpine
+      # → connection refused. Force IPv4 with 127.0.0.1.
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3001 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      be:
+        condition: service_healthy
+
+  be:
+    image: fincent/be:${IMAGE_TAG:-latest}
+    pull_policy: never
+    restart: unless-stopped
+    env_file:
+      - .env
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8000/api/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Provision these on the VM (nginx config + Let's Encrypt certs via Certbot).
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - certbot_www:/var/www/certbot:ro
+    depends_on:
+      fe:
+        condition: service_healthy
+      be:
+        condition: service_healthy
+
+volumes:
+  certbot_www:

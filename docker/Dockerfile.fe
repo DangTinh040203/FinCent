@@ -1,0 +1,44 @@
+# syntax=docker/dockerfile:1
+# Build from the repo ROOT:  docker build -f docker/Dockerfile.fe -t fincent-fe .
+#
+# NEXT_PUBLIC_* values are inlined into the client bundle at BUILD time, so they
+# must be supplied as build args:
+#   docker build -f docker/Dockerfile.fe \
+#     --build-arg NEXT_PUBLIC_API_URL=https://api.example.com/api \
+#     -t fincent-fe .
+
+FROM node:20-alpine AS base
+RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
+WORKDIR /app
+
+# ─── install + build ────────────────────────────────────────────────────────
+FROM base AS build
+COPY . .
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
+
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
+    NEXT_TELEMETRY_DISABLED=1 \
+    NODE_ENV=production
+
+RUN pnpm --filter @repo/fe build
+
+# ─── runner (Next.js standalone) ─────────────────────────────────────────────
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1 \
+    PORT=3001 \
+    HOSTNAME=0.0.0.0
+
+# `node` (uid 1000) is built into the base image — no need to create a user.
+# standalone output already contains a self-contained node_modules + server.js,
+# so there are no pnpm symlinks to worry about here.
+COPY --from=build --chown=node:node /app/apps/fe/.next/standalone ./
+COPY --from=build --chown=node:node /app/apps/fe/.next/static ./apps/fe/.next/static
+# No apps/fe/public directory yet — add a COPY line here if one is created.
+
+USER node
+EXPOSE 3001
+CMD ["node", "apps/fe/server.js"]
