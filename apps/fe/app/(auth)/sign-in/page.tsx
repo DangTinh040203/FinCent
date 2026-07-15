@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@repo/ui/components/card';
-import { ModeToggle } from '@repo/ui/components/mode-toggle';
 import { Progress } from '@repo/ui/components/progress';
 import { Separator } from '@repo/ui/components/separator';
+import { ThemeSelect } from '@repo/ui/components/theme-select';
 import { type Metadata } from 'next';
 import Link from 'next/link';
 
@@ -124,7 +124,7 @@ export default function SignInPage() {
           <div className='lg:invisible'>
             <Wordmark />
           </div>
-          <ModeToggle />
+          <ThemeSelect />
         </header>
 
         <div className='flex flex-1 flex-col justify-center'>

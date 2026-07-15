@@ -8,9 +8,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@repo/ui/components/breadcrumb';
-import { ModeToggle } from '@repo/ui/components/mode-toggle';
 import { Separator } from '@repo/ui/components/separator';
 import { SidebarTrigger } from '@repo/ui/components/sidebar';
+import { ThemeSelect } from '@repo/ui/components/theme-select';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -59,7 +59,7 @@ export function SiteHeader() {
         </BreadcrumbList>
       </Breadcrumb>
       <div className='ml-auto'>
-        <ModeToggle />
+        <ThemeSelect />
       </div>
     </header>
   );

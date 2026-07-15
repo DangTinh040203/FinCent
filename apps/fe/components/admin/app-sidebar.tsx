@@ -24,7 +24,6 @@ import { LogoMark } from '@/components/icon/logo-mark';
 export function AppSidebar() {
   const pathname = usePathname();
   const { setOpenMobile } = useSidebar();
-  // On mobile the sidebar is a sheet overlay; close it when a link is tapped.
   const closeMobileSidebar = () => setOpenMobile(false);
 
   return (

@@ -23,10 +23,6 @@ export interface AdminNavGroup {
   items: AdminNavItem[];
 }
 
-/**
- * Admin navigation derived from the P0 use cases in
- * docs/2-fincent-use-case-diagram.md.
- */
 export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
   {
     label: 'Overview',
