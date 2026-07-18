@@ -10,6 +10,16 @@ import {
   fromMinorUnits,
   toMinorUnits,
 } from '@repo/shared';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@repo/ui/components/alert-dialog';
 import { Badge } from '@repo/ui/components/badge';
 import { Button } from '@repo/ui/components/button';
 import {
@@ -93,10 +103,11 @@ export function BudgetsView() {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<BudgetStatusDto | null>(null);
+  const [deleting, setDeleting] = useState<BudgetStatusDto | null>(null);
 
   const form = useForm<BudgetFormValues>({
     resolver: zodResolver(budgetSchema),
-    defaultValues: { categoryId: '', amount: 0 },
+    defaultValues: { categoryId: '', amount: '' as unknown as number },
   });
 
   useEffect(() => {
@@ -109,7 +120,7 @@ export function BudgetsView() {
             categoryId: editing.categoryId,
             amount: fromMinorUnits(editing.amount, editing.currency),
           }
-        : { categoryId: '', amount: 0 },
+        : { categoryId: '', amount: '' as unknown as number },
     );
   }, [dialogOpen, editing, form]);
 
@@ -129,12 +140,12 @@ export function BudgetsView() {
 
   const deleteMutation = useFinancialMutation(
     async (id: string) => api.budgets.remove(id),
-    { successMessage: 'Budget deleted' },
+    { successMessage: 'Budget deleted', onSuccess: () => setDeleting(null) },
   );
 
   return (
     <div className='flex flex-col gap-4'>
-      <div className='flex items-center justify-between'>
+      <div className='flex flex-wrap items-center justify-between gap-2'>
         <div>
           <h1 className='font-display text-xl font-semibold'>Budgets</h1>
           <p className='text-muted-foreground text-sm'>
@@ -199,7 +210,11 @@ export function BudgetsView() {
                     <Badge variant={badge.variant}>{badge.label}</Badge>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant='ghost' size='icon'>
+                        <Button
+                          variant='ghost'
+                          size='icon'
+                          aria-label='Budget actions'
+                        >
                           <MoreHorizontal className='size-4' />
                         </Button>
                       </DropdownMenuTrigger>
@@ -221,7 +236,7 @@ export function BudgetsView() {
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           variant='destructive'
-                          onClick={() => deleteMutation.mutate(budget.id)}
+                          onClick={() => setDeleting(budget)}
                         >
                           Delete
                         </DropdownMenuItem>
@@ -323,7 +338,13 @@ export function BudgetsView() {
                   <FormItem>
                     <FormLabel>Limit ({currency})</FormLabel>
                     <FormControl>
-                      <Input type='number' min={0} step='any' {...field} />
+                      <Input
+                        type='number'
+                        inputMode='decimal'
+                        min={0}
+                        step='any'
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -345,6 +366,31 @@ export function BudgetsView() {
           </Form>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog
+        open={deleting !== null}
+        onOpenChange={(open) => !open && setDeleting(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Delete the {deleting?.categoryName} budget?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              You will stop getting warnings for this category. Transactions
+              are not affected.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleting && deleteMutation.mutate(deleting.id)}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -69,6 +69,7 @@ export function ScenariosView() {
           <div className='flex gap-2'>
             <Input
               type='number'
+              inputMode='decimal'
               min={0}
               step='any'
               placeholder={`Purchase amount (${currency})`}

@@ -138,7 +138,13 @@ export function SettingsView() {
                     <FormItem>
                       <FormLabel>Cycle starts on day</FormLabel>
                       <FormControl>
-                        <Input type='number' min={1} max={28} {...field} />
+                        <Input
+                          type='number'
+                          inputMode='numeric'
+                          min={1}
+                          max={28}
+                          {...field}
+                        />
                       </FormControl>
                       <FormDescription>
                         1 = calendar month; set your payday for payday cycles.
@@ -154,7 +160,13 @@ export function SettingsView() {
                     <FormItem>
                       <FormLabel>Safety buffer</FormLabel>
                       <FormControl>
-                        <Input type='number' min={0} step='any' {...field} />
+                        <Input
+                          type='number'
+                          inputMode='decimal'
+                          min={0}
+                          step='any'
+                          {...field}
+                        />
                       </FormControl>
                       <FormDescription>
                         Always kept aside in Safe-to-Spend.

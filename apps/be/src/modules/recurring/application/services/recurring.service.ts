@@ -67,6 +67,7 @@ export class RecurringService {
     user: User,
     command: CreateRecurringRuleCommand,
   ): Promise<RecurringRule> {
+    this.requireValidSchedule(command.nextDueAt, command.endsAt ?? null);
     const account = await this.requireAccount(user, command.accountId);
     await this.requireMatchingCategory(user, command.categoryId, command.type);
 
@@ -86,6 +87,11 @@ export class RecurringService {
     command: UpdateRecurringRuleCommand,
   ): Promise<RecurringRule> {
     const rule = await this.getRule(user, id);
+
+    this.requireValidSchedule(
+      command.nextDueAt ?? rule.nextDueAt,
+      command.endsAt === undefined ? rule.endsAt : command.endsAt,
+    );
 
     let currency: string | undefined;
     if (command.accountId && command.accountId !== rule.accountId) {
@@ -207,6 +213,14 @@ export class RecurringService {
       throw new BadRequestException('Occurrence has already been resolved');
     }
     return occurrence;
+  }
+
+  private requireValidSchedule(nextDueAt: Date, endsAt: Date | null): void {
+    if (endsAt && endsAt < nextDueAt) {
+      throw new BadRequestException(
+        'End date must be on or after the next due date',
+      );
+    }
   }
 
   private async requireAccount(user: User, accountId: string) {

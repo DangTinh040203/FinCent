@@ -91,6 +91,9 @@ export class GoalService {
     command: UpdateGoalCommand,
   ): Promise<Goal> {
     await this.get(user, id);
+    if (command.deadline && command.deadline <= new Date()) {
+      throw new BadRequestException('Deadline must be in the future');
+    }
     if (command.linkedAccountId) {
       await this.requireAccount(user, command.linkedAccountId);
     }

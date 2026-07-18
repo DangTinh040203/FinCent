@@ -74,7 +74,7 @@ export function TransactionForm({
 
   const defaultValues: TransactionFormValues = {
     type: TransactionType.EXPENSE,
-    amount: 0,
+    amount: '' as unknown as number,
     accountId: accounts?.[0]?.id ?? '',
     categoryId: undefined,
     counterAccountId: undefined,
@@ -162,8 +162,9 @@ export function TransactionForm({
         className={
           compact
             ? `
-              grid grid-cols-2 items-end gap-2
-              lg:grid-cols-7
+              grid grid-cols-2 items-start gap-2
+              md:grid-cols-4
+              xl:grid-cols-7
             `
             : 'space-y-4'
         }
@@ -208,6 +209,7 @@ export function TransactionForm({
               <FormControl>
                 <Input
                   type='number'
+                  inputMode='decimal'
                   min={0}
                   step='any'
                   placeholder={`Amount (${currency})`}

@@ -115,25 +115,27 @@ export function CategoryManager() {
             <Badge
               key={category.id}
               variant={category.isArchived ? 'outline' : 'secondary'}
-              className={`
-                cursor-pointer
-                ${category.isArchived ? 'opacity-50' : ''}
-              `}
-              onClick={() =>
-                category.isSystem ? undefined : openEdit(category)
-              }
+              className={category.isArchived ? 'opacity-50' : undefined}
             >
-              {category.name}
-              {category.isSystem && ' ·'}
+              {category.isSystem ? (
+                category.name
+              ) : (
+                <Button
+                  variant='link'
+                  size='sm'
+                  className={`text-foreground h-auto p-0 text-xs font-medium`}
+                  aria-label={`Edit ${category.name}`}
+                  onClick={() => openEdit(category)}
+                >
+                  {category.name}
+                </Button>
+              )}
               {!category.isSystem && (
                 <Button
                   variant='link'
                   size='sm'
-                  className='ml-1 h-auto p-0 text-xs'
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    archiveMutation.mutate(category);
-                  }}
+                  className='text-muted-foreground ml-1 h-auto p-0 text-xs'
+                  onClick={() => archiveMutation.mutate(category)}
                 >
                   {category.isArchived ? 'restore' : 'archive'}
                 </Button>

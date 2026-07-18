@@ -166,6 +166,11 @@ export class TransactionService {
     cursor: TransactionCursor | null,
     limit: number,
   ): Promise<TransactionPage> {
+    if (filters.from && filters.to && filters.from > filters.to) {
+      throw new BadRequestException(
+        'The from date must be on or before the to date',
+      );
+    }
     let categoryIds = filters.categoryIds;
     if (categoryIds?.length === 1) {
       categoryIds = await this.categoryService.resolveCategoryIdsIncludingChildren(

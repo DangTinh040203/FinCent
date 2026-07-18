@@ -62,8 +62,8 @@ import {
   TableRow,
 } from '@repo/ui/components/table';
 import { ArrowRightLeft, MoreHorizontal, ReceiptText, X } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 
 import { TransactionForm } from '@/app/(admin)/transactions/transaction-form';
 import { DatePicker } from '@/components/finance/date-picker';
@@ -83,16 +83,32 @@ export function TransactionsView() {
   const searchParams = useSearchParams();
   const api = useApi();
 
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [accountId, setAccountId] = useState<string | undefined>(
     searchParams.get('accountId') ?? undefined,
   );
   const [categoryId, setCategoryId] = useState<string | undefined>(
     searchParams.get('categoryId') ?? undefined,
   );
-  const [type, setType] = useState<string>(ALL);
+  const [type, setType] = useState<string>(searchParams.get('type') ?? ALL);
   const [search, setSearch] = useState('');
   const [from, setFrom] = useState(searchParams.get('from') ?? '');
   const [to, setTo] = useState(searchParams.get('to') ?? '');
+
+  const invalidRange = Boolean(from && to && from > to);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (accountId) params.set('accountId', accountId);
+    if (categoryId) params.set('categoryId', categoryId);
+    if (type !== ALL) params.set('type', type);
+    if (from) params.set('from', from);
+    if (to) params.set('to', to);
+    const next = params.toString();
+    router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
+  }, [accountId, categoryId, type, from, to, pathname, router]);
 
   const query = useMemo(
     () => ({
@@ -100,11 +116,14 @@ export function TransactionsView() {
       categoryId,
       type: type === ALL ? undefined : (type as TransactionType),
       search: search || undefined,
-      from: from ? new Date(from).toISOString() : undefined,
-      to: to ? new Date(`${to}T23:59:59.999`).toISOString() : undefined,
+      from: from && !invalidRange ? new Date(from).toISOString() : undefined,
+      to:
+        to && !invalidRange
+          ? new Date(`${to}T23:59:59.999`).toISOString()
+          : undefined,
       limit: 25,
     }),
-    [accountId, categoryId, type, search, from, to],
+    [accountId, categoryId, type, search, from, to, invalidRange],
   );
 
   const {
@@ -218,6 +237,8 @@ export function TransactionsView() {
             />
             <div className='flex gap-2'>
               <Input
+                type='search'
+                aria-label='Search notes'
                 placeholder='Search notes…'
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
@@ -241,6 +262,12 @@ export function TransactionsView() {
               )}
             </div>
           </div>
+          {invalidRange && (
+            <p className='text-destructive text-xs' role='alert'>
+              The from date must be on or before the to date — the range is
+              being ignored.
+            </p>
+          )}
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -270,8 +297,18 @@ export function TransactionsView() {
                   <TableRow>
                     <TableHead>Date</TableHead>
                     <TableHead>Category</TableHead>
-                    <TableHead>Note</TableHead>
-                    <TableHead>Account</TableHead>
+                    <TableHead className={`
+                      hidden
+                      md:table-cell
+                    `}>
+                      Note
+                    </TableHead>
+                    <TableHead className={`
+                      hidden
+                      sm:table-cell
+                    `}>
+                      Account
+                    </TableHead>
                     <TableHead className='text-right'>Amount</TableHead>
                     <TableHead />
                   </TableRow>
@@ -299,11 +336,15 @@ export function TransactionsView() {
                         )}
                       </TableCell>
                       <TableCell className={`
-                        text-muted-foreground max-w-48 truncate
+                        text-muted-foreground hidden max-w-48 truncate
+                        md:table-cell
                       `}>
                         {transaction.note}
                       </TableCell>
-                      <TableCell className='text-muted-foreground'>
+                      <TableCell className={`
+                        text-muted-foreground hidden
+                        sm:table-cell
+                      `}>
                         {accountNames.get(transaction.accountId)}
                         {transaction.counterAccountId && (
                           <>
@@ -326,7 +367,11 @@ export function TransactionsView() {
                       <TableCell className='w-10'>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant='ghost' size='icon'>
+                            <Button
+                              variant='ghost'
+                              size='icon'
+                              aria-label='Transaction actions'
+                            >
                               <MoreHorizontal className='size-4' />
                             </Button>
                           </DropdownMenuTrigger>

@@ -218,7 +218,13 @@ export function AccountDialog({
                   <FormItem>
                     <FormLabel>Opening balance</FormLabel>
                     <FormControl>
-                      <Input type='number' min={0} step='any' {...field} />
+                      <Input
+                        type='number'
+                        inputMode='decimal'
+                        min={0}
+                        step='any'
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

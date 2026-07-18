@@ -31,51 +31,52 @@ export function DatePicker({
 }: DatePickerProps) {
   const [open, setOpen] = useState(false);
   const selected = value ? new Date(`${value}T00:00:00`) : undefined;
+  const showClear = allowClear && selected && !disabled;
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+    <div className={cn('relative', className)}>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            type='button'
+            variant='outline'
+            disabled={disabled}
+            className={cn(
+              'w-full justify-start text-left font-normal',
+              !selected && 'text-muted-foreground',
+              showClear && 'pr-8',
+            )}
+          >
+            <CalendarIcon className='size-4' aria-hidden='true' />
+            <span className='flex-1 truncate'>
+              {selected ? formatDate(selected) : placeholder}
+            </span>
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className='w-auto p-0' align='start'>
+          <Calendar
+            mode='single'
+            selected={selected}
+            defaultMonth={selected}
+            onSelect={(date) => {
+              onChange(date ? toDateInputValue(date) : '');
+              setOpen(false);
+            }}
+          />
+        </PopoverContent>
+      </Popover>
+      {showClear && (
         <Button
           type='button'
-          variant='outline'
-          disabled={disabled}
-          className={cn(
-            'w-full justify-start text-left font-normal',
-            !selected && 'text-muted-foreground',
-            className,
-          )}
+          variant='ghost'
+          size='icon'
+          aria-label='Clear date'
+          className={`absolute top-1/2 right-1 size-6 -translate-y-1/2`}
+          onClick={() => onChange('')}
         >
-          <CalendarIcon className='size-4' />
-          <span className='flex-1 truncate'>
-            {selected ? formatDate(selected) : placeholder}
-          </span>
-          {allowClear && selected && (
-            <X
-              className={`
-                text-muted-foreground size-4 shrink-0
-                hover:text-foreground
-              `}
-              role='button'
-              aria-label='Clear date'
-              onClick={(event) => {
-                event.stopPropagation();
-                onChange('');
-              }}
-            />
-          )}
+          <X className='size-3.5' aria-hidden='true' />
         </Button>
-      </PopoverTrigger>
-      <PopoverContent className='w-auto p-0' align='start'>
-        <Calendar
-          mode='single'
-          selected={selected}
-          defaultMonth={selected}
-          onSelect={(date) => {
-            onChange(date ? toDateInputValue(date) : '');
-            setOpen(false);
-          }}
-        />
-      </PopoverContent>
-    </Popover>
+      )}
+    </div>
   );
 }

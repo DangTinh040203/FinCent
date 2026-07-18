@@ -51,19 +51,27 @@ const CADENCE_LABELS: Record<RecurringCadence, string> = {
   [RecurringCadence.YEARLY]: 'Yearly',
 };
 
-const ruleSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(80),
-  type: z.enum(CategoryType),
-  amount: z.coerce.number<number>().positive(),
-  accountId: z.string().min(1, 'Pick an account'),
-  categoryId: z.string().min(1, 'Pick a category'),
-  cadence: z.enum(RecurringCadence),
-  interval: z.coerce.number<number>().int().min(1).max(12),
-  nextDueAt: z.string().min(1),
-  endsAt: z.string().optional(),
-  autoConfirm: z.boolean(),
-  isEssential: z.boolean(),
-});
+const ruleSchema = z
+  .object({
+    name: z.string().min(1, 'Name is required').max(80),
+    type: z.enum(CategoryType),
+    amount: z.coerce.number<number>().positive('Enter an amount'),
+    accountId: z.string().min(1, 'Pick an account'),
+    categoryId: z.string().min(1, 'Pick a category'),
+    cadence: z.enum(RecurringCadence),
+    interval: z.coerce.number<number>().int().min(1).max(12),
+    nextDueAt: z.string().min(1, 'Pick the next due date'),
+    endsAt: z.string().optional(),
+    autoConfirm: z.boolean(),
+    isEssential: z.boolean(),
+  })
+  .refine(
+    (values) => !values.endsAt || values.endsAt >= values.nextDueAt,
+    {
+      message: 'End date must be on or after the next due date',
+      path: ['endsAt'],
+    },
+  );
 
 type RuleFormValues = z.infer<typeof ruleSchema>;
 
@@ -82,7 +90,7 @@ export function RuleDialog({ open, onOpenChange, rule }: RuleDialogProps) {
     defaultValues: {
       name: '',
       type: CategoryType.EXPENSE,
-      amount: 0,
+      amount: '' as unknown as number,
       accountId: '',
       categoryId: '',
       cadence: RecurringCadence.MONTHLY,
@@ -118,7 +126,7 @@ export function RuleDialog({ open, onOpenChange, rule }: RuleDialogProps) {
       form.reset({
         name: '',
         type: CategoryType.EXPENSE,
-        amount: 0,
+        amount: '' as unknown as number,
         accountId: accounts?.[0]?.id ?? '',
         categoryId: '',
         cadence: RecurringCadence.MONTHLY,
@@ -238,7 +246,13 @@ export function RuleDialog({ open, onOpenChange, rule }: RuleDialogProps) {
                   <FormItem>
                     <FormLabel>Amount ({currency})</FormLabel>
                     <FormControl>
-                      <Input type='number' min={0} step='any' {...field} />
+                      <Input
+                        type='number'
+                        inputMode='decimal'
+                        min={0}
+                        step='any'
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -282,6 +282,7 @@ function PreferencesStep({ busy, onDone }: StepProps) {
             <Label>Safety buffer (optional)</Label>
             <Input
               type='number'
+              inputMode='decimal'
               min={0}
               step='any'
               placeholder='e.g. 500000'
@@ -393,6 +394,7 @@ function AccountsStep({ busy, onDone }: StepProps) {
           </Select>
           <Input
             type='number'
+            inputMode='decimal'
             min={0}
             step='any'
             placeholder={`Balance (${currency})`}
@@ -517,6 +519,7 @@ function RecurringStep({ busy, onDone }: StepProps) {
             </Select>
             <Input
               type='number'
+              inputMode='decimal'
               min={0}
               step='any'
               placeholder={`Amount (${currency})`}
@@ -597,6 +600,7 @@ function GoalStep({ busy, onDone }: StepProps) {
           />
           <Input
             type='number'
+            inputMode='decimal'
             min={0}
             step='any'
             placeholder={`Target (${currency})`}

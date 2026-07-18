@@ -76,7 +76,9 @@ export function AccountsView() {
 
   return (
     <Card>
-      <CardHeader className='flex flex-row items-start justify-between'>
+      <CardHeader
+        className={`flex flex-row flex-wrap items-start justify-between gap-2`}
+      >
         <div className='space-y-1'>
           <CardTitle>Accounts</CardTitle>
           <CardDescription>
@@ -173,7 +175,11 @@ export function AccountsView() {
                   <TableCell className='w-10'>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant='ghost' size='icon'>
+                        <Button
+                          variant='ghost'
+                          size='icon'
+                          aria-label='Account actions'
+                        >
                           <MoreHorizontal className='size-4' />
                         </Button>
                       </DropdownMenuTrigger>

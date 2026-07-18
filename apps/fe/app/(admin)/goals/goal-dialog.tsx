@@ -47,8 +47,13 @@ const NONE = 'NONE';
 
 const goalSchema = z.object({
   name: z.string().min(1, 'Name is required').max(80),
-  targetAmount: z.coerce.number<number>().positive(),
-  deadline: z.string().min(1),
+  targetAmount: z.coerce.number<number>().positive('Enter a target amount'),
+  deadline: z
+    .string()
+    .min(1, 'Pick a deadline')
+    .refine((value) => value > toDateInputValue(new Date()), {
+      message: 'Deadline must be in the future',
+    }),
   priority: z.enum(GoalPriority),
   linkedAccountId: z.string().optional(),
 });
@@ -70,7 +75,7 @@ export function GoalDialog({ open, onOpenChange, goal }: GoalDialogProps) {
     resolver: zodResolver(goalSchema),
     defaultValues: {
       name: '',
-      targetAmount: 0,
+      targetAmount: '' as unknown as number,
       deadline: '',
       priority: GoalPriority.MEDIUM,
       linkedAccountId: undefined,
@@ -92,7 +97,7 @@ export function GoalDialog({ open, onOpenChange, goal }: GoalDialogProps) {
           }
         : {
             name: '',
-            targetAmount: 0,
+            targetAmount: '' as unknown as number,
             deadline: '',
             priority: GoalPriority.MEDIUM,
             linkedAccountId: undefined,
@@ -159,7 +164,13 @@ export function GoalDialog({ open, onOpenChange, goal }: GoalDialogProps) {
                   <FormItem>
                     <FormLabel>Target ({currency})</FormLabel>
                     <FormControl>
-                      <Input type='number' min={0} step='any' {...field} />
+                      <Input
+                        type='number'
+                        inputMode='decimal'
+                        min={0}
+                        step='any'
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

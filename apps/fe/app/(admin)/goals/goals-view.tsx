@@ -8,6 +8,16 @@ import {
   GoalStatus,
   toMinorUnits,
 } from '@repo/shared';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@repo/ui/components/alert-dialog';
 import { Badge } from '@repo/ui/components/badge';
 import { Button } from '@repo/ui/components/button';
 import {
@@ -66,6 +76,7 @@ export function GoalsView() {
   const [contributionAccount, setContributionAccount] = useState<
     string | undefined
   >(undefined);
+  const [deleting, setDeleting] = useState<GoalDto | null>(null);
 
   const activeGoal =
     (goals ?? []).find((goal) => goal.status === GoalStatus.ACTIVE) ?? null;
@@ -74,7 +85,7 @@ export function GoalsView() {
 
   const removeMutation = useFinancialMutation(
     async (id: string) => api.goals.remove(id),
-    { successMessage: 'Goal deleted' },
+    { successMessage: 'Goal deleted', onSuccess: () => setDeleting(null) },
   );
 
   const adjustMutation = useFinancialMutation(
@@ -118,7 +129,7 @@ export function GoalsView() {
 
   return (
     <div className='flex flex-col gap-4'>
-      <div className='flex items-center justify-between'>
+      <div className='flex flex-wrap items-center justify-between gap-2'>
         <div>
           <h1 className='font-display text-xl font-semibold'>Savings goals</h1>
           <p className='text-muted-foreground text-sm'>
@@ -198,7 +209,11 @@ export function GoalsView() {
                     </Badge>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant='ghost' size='icon'>
+                        <Button
+                          variant='ghost'
+                          size='icon'
+                          aria-label='Goal actions'
+                        >
                           <MoreHorizontal className='size-4' />
                         </Button>
                       </DropdownMenuTrigger>
@@ -213,7 +228,7 @@ export function GoalsView() {
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           variant='destructive'
-                          onClick={() => removeMutation.mutate(goal.id)}
+                          onClick={() => setDeleting(goal)}
                         >
                           Delete
                         </DropdownMenuItem>
@@ -375,8 +390,10 @@ export function GoalsView() {
           <div className='space-y-3'>
             <Input
               type='number'
+              inputMode='decimal'
               min={0}
               step='any'
+              aria-label='Contribution amount'
               placeholder={`Amount (${contributing?.currency ?? ''})`}
               value={contributionAmount}
               onChange={(event) => setContributionAmount(event.target.value)}
@@ -413,6 +430,29 @@ export function GoalsView() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog
+        open={deleting !== null}
+        onOpenChange={(open) => !open && setDeleting(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete “{deleting?.name}”?</AlertDialogTitle>
+            <AlertDialogDescription>
+              The goal and its contribution history will be removed. Recorded
+              transfer transactions stay in your ledger.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleting && removeMutation.mutate(deleting.id)}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

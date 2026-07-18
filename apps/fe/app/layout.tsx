@@ -3,11 +3,18 @@ import '@repo/ui/globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 import { Toaster } from '@repo/ui/components/sonner';
 import { ThemeProvider } from '@repo/ui/components/theme-provider';
-import { type Metadata } from 'next';
+import { type Metadata, type Viewport } from 'next';
 import { type ReactNode } from 'react';
 
 import { AppProviders } from '@/components/providers/app-providers';
 import { fontVariables } from '@/configs/font.config';
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#060708' },
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+  ],
+};
 
 export const metadata: Metadata = {
   title: 'FinCent — Know exactly what you can safely spend',

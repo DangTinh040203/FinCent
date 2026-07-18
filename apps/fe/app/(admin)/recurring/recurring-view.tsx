@@ -10,6 +10,16 @@ import {
   type RecurringRuleDto,
   toMinorUnits,
 } from '@repo/shared';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@repo/ui/components/alert-dialog';
 import { Badge } from '@repo/ui/components/badge';
 import { Button } from '@repo/ui/components/button';
 import {
@@ -83,6 +93,9 @@ export function RecurringView() {
     null,
   );
   const [confirmAmount, setConfirmAmount] = useState('');
+  const [deletingRule, setDeletingRule] = useState<RecurringRuleDto | null>(
+    null,
+  );
 
   const pauseMutation = useFinancialMutation(
     async (rule: RecurringRuleDto) =>
@@ -92,7 +105,7 @@ export function RecurringView() {
 
   const deleteMutation = useFinancialMutation(
     async (id: string) => api.recurring.deleteRule(id),
-    { successMessage: 'Rule deleted' },
+    { successMessage: 'Rule deleted', onSuccess: () => setDeletingRule(null) },
   );
 
   const skipMutation = useFinancialMutation(
@@ -176,7 +189,9 @@ export function RecurringView() {
       )}
 
       <Card>
-        <CardHeader className='flex flex-row items-start justify-between'>
+        <CardHeader
+          className={`flex flex-row flex-wrap items-start justify-between gap-2`}
+        >
           <div className='space-y-1'>
             <CardTitle>Recurring rules</CardTitle>
             <CardDescription>
@@ -268,7 +283,11 @@ export function RecurringView() {
                     <TableCell className='w-10'>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant='ghost' size='icon'>
+                          <Button
+                            variant='ghost'
+                            size='icon'
+                            aria-label='Rule actions'
+                          >
                             <MoreHorizontal className='size-4' />
                           </Button>
                         </DropdownMenuTrigger>
@@ -288,7 +307,7 @@ export function RecurringView() {
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             variant='destructive'
-                            onClick={() => deleteMutation.mutate(rule.id)}
+                            onClick={() => setDeletingRule(rule)}
                           >
                             Delete
                           </DropdownMenuItem>
@@ -323,8 +342,10 @@ export function RecurringView() {
           </DialogHeader>
           <Input
             type='number'
+            inputMode='decimal'
             min={0}
             step='any'
+            aria-label='Amount to record'
             value={confirmAmount}
             onChange={(event) => setConfirmAmount(event.target.value)}
           />
@@ -353,6 +374,33 @@ export function RecurringView() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog
+        open={deletingRule !== null}
+        onOpenChange={(open) => !open && setDeletingRule(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Delete “{deletingRule?.name}”?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Pending occurrences and projections for this rule will be
+              removed. Already confirmed transactions stay in your ledger.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() =>
+                deletingRule && deleteMutation.mutate(deletingRule.id)
+              }
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
