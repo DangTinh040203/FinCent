@@ -6,12 +6,21 @@
  */
 export const CachePrefix = {
   USER: 'user',
+  OVERVIEW: 'overview',
+  STS: 'sts',
 } as const;
 
 export const CacheKeys = {
   user: {
     byProviderId: (providerId: string): string =>
       `${CachePrefix.USER}:provider:${providerId}`,
+  },
+  overview: {
+    byUser: (userId: string): string =>
+      `${CachePrefix.OVERVIEW}:user:${userId}`,
+  },
+  sts: {
+    byUser: (userId: string): string => `${CachePrefix.STS}:user:${userId}`,
   },
 } as const;
 

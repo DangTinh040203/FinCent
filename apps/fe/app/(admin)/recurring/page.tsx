@@ -1,11 +1,11 @@
 import { type Metadata } from 'next';
 
-import { PagePlaceholder } from '@/components/admin/page-placeholder';
+import { RecurringView } from '@/app/(admin)/recurring/recurring-view';
 
 export const metadata: Metadata = {
   title: 'Recurring & bills · FinCent',
 };
 
 export default function RecurringPage() {
-  return <PagePlaceholder href='/recurring' />;
+  return <RecurringView />;
 }

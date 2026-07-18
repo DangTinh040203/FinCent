@@ -1,4 +1,9 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  type OnboardingStateDto,
+  type UpdateOnboardingStatePayload,
+  type UpdateUserSettingsPayload,
+} from '@repo/shared';
 
 import { CacheKeys, CacheService } from '@/libs/cache';
 import {
@@ -23,7 +28,7 @@ export class UserService {
     const cachedUser = await this.cacheService.get<User | null>(cacheKey);
 
     if (cachedUser) {
-      return cachedUser;
+      return new User(cachedUser);
     }
 
     this.logger.debug(`Cache MISS for user: ${providerId}`);
@@ -37,6 +42,52 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async updateSettings(
+    user: User,
+    payload: UpdateUserSettingsPayload,
+  ): Promise<User> {
+    const updated = await this.userRepository.updateSettings(user.id, payload);
+    await this.invalidateUserCache(user.providerId);
+    return updated;
+  }
+
+  async updateOnboarding(
+    user: User,
+    payload: UpdateOnboardingStatePayload,
+  ): Promise<User> {
+    const state = user.toOnboardingDto();
+    const next: OnboardingStateDto = {
+      completedSteps: [...state.completedSteps],
+      skippedSteps: [...state.skippedSteps],
+      isCompleted: state.isCompleted || payload.finish === true,
+    };
+
+    if (
+      payload.completeStep &&
+      !next.completedSteps.includes(payload.completeStep)
+    ) {
+      next.completedSteps.push(payload.completeStep);
+      next.skippedSteps = next.skippedSteps.filter(
+        (step) => step !== payload.completeStep,
+      );
+    }
+
+    if (
+      payload.skipStep &&
+      !next.completedSteps.includes(payload.skipStep) &&
+      !next.skippedSteps.includes(payload.skipStep)
+    ) {
+      next.skippedSteps.push(payload.skipStep);
+    }
+
+    const updated = await this.userRepository.updateOnboardingState(
+      user.id,
+      next,
+    );
+    await this.invalidateUserCache(user.providerId);
+    return updated;
   }
 
   async invalidateUserCache(providerId: string): Promise<void> {

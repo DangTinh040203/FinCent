@@ -1,13 +1,28 @@
 model User {
-  id         String   @id @default(uuid())
-  providerId String
-  provider   String
-  firstName  String?
-  lastName   String?
-  email      String   @unique
-  avatar     String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id              String   @id @default(uuid())
+  providerId      String
+  provider        String
+  firstName       String?
+  lastName        String?
+  email           String   @unique
+  avatar          String?
+  displayCurrency String   @default("VND")
+  safetyBuffer    BigInt   @default(0)
+  cycleStartDay   Int      @default(1)
+  aiConsent       Boolean  @default(false)
+  onboardingState Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  accounts       Account[]
+  categories     Category[]
+  transactions   Transaction[]
+  recurringRules RecurringRule[]
+  budgets        Budget[]
+  goals          Goal[]
+  stsSnapshots   SafeToSpendSnapshot[]
+  notifications  Notification[]
+  auditLogs      AuditLog[]
 
   @@map("users")
 }

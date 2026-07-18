@@ -1,0 +1,28 @@
+enum AccountType {
+  CASH
+  BANK
+  E_WALLET
+  CREDIT_CARD
+  OTHER
+}
+
+model Account {
+  id             String      @id @default(uuid())
+  userId         String
+  name           String
+  type           AccountType
+  currency       String      @default("VND")
+  openingBalance BigInt      @default(0)
+  currentBalance BigInt      @default(0)
+  archivedAt     DateTime?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  user                 User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions         Transaction[]   @relation("AccountTransactions")
+  incomingTransactions Transaction[]   @relation("CounterAccountTransactions")
+  recurringRules       RecurringRule[]
+
+  @@index([userId])
+  @@map("accounts")
+}

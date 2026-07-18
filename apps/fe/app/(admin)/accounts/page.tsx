@@ -1,11 +1,11 @@
 import { type Metadata } from 'next';
 
-import { PagePlaceholder } from '@/components/admin/page-placeholder';
+import { AccountsView } from '@/app/(admin)/accounts/accounts-view';
 
 export const metadata: Metadata = {
   title: 'Accounts · FinCent',
 };
 
 export default function AccountsPage() {
-  return <PagePlaceholder href='/accounts' />;
+  return <AccountsView />;
 }
