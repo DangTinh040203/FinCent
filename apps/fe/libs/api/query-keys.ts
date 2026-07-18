@@ -24,6 +24,7 @@ export const queryKeys = {
 } as const;
 
 export const FINANCIAL_KEYS_TO_INVALIDATE = [
+  ['profile'],
   ['accounts'],
   ['transactions'],
   ['overview'],
