@@ -30,6 +30,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { DatePicker } from '@/components/finance/date-picker';
 import { AccountSelect, CategorySelect } from '@/components/finance/selectors';
 import { useApi } from '@/components/providers/app-providers';
 import { useAccounts, useFinancialMutation } from '@/libs/api/hooks';
@@ -289,7 +290,7 @@ export function TransactionForm({
                 Date
               </FormLabel>
               <FormControl>
-                <Input type='date' {...field} />
+                <DatePicker value={field.value} onChange={field.onChange} />
               </FormControl>
               <FormMessage />
             </FormItem>

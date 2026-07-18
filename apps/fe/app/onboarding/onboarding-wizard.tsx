@@ -35,6 +35,7 @@ import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { DatePicker } from '@/components/finance/date-picker';
 import { Money } from '@/components/finance/money';
 import { useApi } from '@/components/providers/app-providers';
 import {
@@ -522,11 +523,7 @@ function RecurringStep({ busy, onDone }: StepProps) {
               value={amount}
               onChange={(event) => setAmount(event.target.value)}
             />
-            <Input
-              type='date'
-              value={dueDay}
-              onChange={(event) => setDueDay(event.target.value)}
-            />
+            <DatePicker value={dueDay} onChange={setDueDay} />
             <Button
               variant='outline'
               onClick={addRule}
@@ -606,10 +603,10 @@ function GoalStep({ busy, onDone }: StepProps) {
             value={target}
             onChange={(event) => setTarget(event.target.value)}
           />
-          <Input
-            type='date'
+          <DatePicker
             value={deadline}
-            onChange={(event) => setDeadline(event.target.value)}
+            onChange={setDeadline}
+            placeholder='Deadline'
           />
         </div>
         <div className='flex justify-between pt-2'>

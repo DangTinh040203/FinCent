@@ -126,18 +126,17 @@ export function CategoryManager() {
               {category.name}
               {category.isSystem && ' ·'}
               {!category.isSystem && (
-                <button
-                  className={`
-                    ml-1 text-xs underline-offset-2
-                    hover:underline
-                  `}
+                <Button
+                  variant='link'
+                  size='sm'
+                  className='ml-1 h-auto p-0 text-xs'
                   onClick={(event) => {
                     event.stopPropagation();
                     archiveMutation.mutate(category);
                   }}
                 >
                   {category.isArchived ? 'restore' : 'archive'}
-                </button>
+                </Button>
               )}
             </Badge>
           ))}

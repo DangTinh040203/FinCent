@@ -39,6 +39,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { DatePicker } from '@/components/finance/date-picker';
 import { AccountSelect, CategorySelect } from '@/components/finance/selectors';
 import { useApi } from '@/components/providers/app-providers';
 import { useAccounts, useFinancialMutation } from '@/libs/api/hooks';
@@ -324,7 +325,10 @@ export function RuleDialog({ open, onOpenChange, rule }: RuleDialogProps) {
                   <FormItem>
                     <FormLabel>Next due</FormLabel>
                     <FormControl>
-                      <Input type='date' {...field} />
+                      <DatePicker
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -338,7 +342,12 @@ export function RuleDialog({ open, onOpenChange, rule }: RuleDialogProps) {
                 <FormItem>
                   <FormLabel>Ends (optional)</FormLabel>
                   <FormControl>
-                    <Input type='date' {...field} />
+                    <DatePicker
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      placeholder='Never ends'
+                      allowClear
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

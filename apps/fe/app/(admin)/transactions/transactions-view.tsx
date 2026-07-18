@@ -66,6 +66,7 @@ import { useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 import { TransactionForm } from '@/app/(admin)/transactions/transaction-form';
+import { DatePicker } from '@/components/finance/date-picker';
 import { Money } from '@/components/finance/money';
 import { AccountSelect, CategorySelect } from '@/components/finance/selectors';
 import { useApi } from '@/components/providers/app-providers';
@@ -203,17 +204,17 @@ export function TransactionsView() {
                 </SelectItem>
               </SelectContent>
             </Select>
-            <Input
-              type='date'
+            <DatePicker
               value={from}
-              onChange={(event) => setFrom(event.target.value)}
-              aria-label='From date'
+              onChange={setFrom}
+              placeholder='From date'
+              allowClear
             />
-            <Input
-              type='date'
+            <DatePicker
               value={to}
-              onChange={(event) => setTo(event.target.value)}
-              aria-label='To date'
+              onChange={setTo}
+              placeholder='To date'
+              allowClear
             />
             <div className='flex gap-2'>
               <Input

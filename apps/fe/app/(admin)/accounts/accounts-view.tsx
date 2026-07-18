@@ -23,6 +23,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from '@repo/ui/components/empty';
+import { Label } from '@repo/ui/components/label';
 import { Skeleton } from '@repo/ui/components/skeleton';
 import { Switch } from '@repo/ui/components/switch';
 import {
@@ -83,15 +84,17 @@ export function AccountsView() {
           </CardDescription>
         </div>
         <div className='flex items-center gap-4'>
-          <label className={`
-            text-muted-foreground flex items-center gap-2 text-sm
-          `}>
+          <Label
+            className={`
+              text-muted-foreground flex items-center gap-2 text-sm font-normal
+            `}
+          >
             <Switch
               checked={includeArchived}
               onCheckedChange={setIncludeArchived}
             />
             Show archived
-          </label>
+          </Label>
           <Button onClick={openCreate}>
             <Plus className='size-4' />
             Add account

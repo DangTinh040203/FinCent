@@ -38,6 +38,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { DatePicker } from '@/components/finance/date-picker';
 import { AccountSelect } from '@/components/finance/selectors';
 import { useApi } from '@/components/providers/app-providers';
 import { useFinancialMutation, useProfile } from '@/libs/api/hooks';
@@ -171,7 +172,10 @@ export function GoalDialog({ open, onOpenChange, goal }: GoalDialogProps) {
                   <FormItem>
                     <FormLabel>Deadline</FormLabel>
                     <FormControl>
-                      <Input type='date' {...field} />
+                      <DatePicker
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
