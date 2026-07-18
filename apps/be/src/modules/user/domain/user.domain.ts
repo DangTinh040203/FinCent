@@ -47,12 +47,15 @@ export class User {
   }
 
   toOnboardingDto(): OnboardingStateDto {
-    return (
-      this.onboardingState ?? {
-        completedSteps: [],
-        skippedSteps: [],
-        isCompleted: false,
-      }
-    );
+    const state = this.onboardingState;
+    return {
+      completedSteps: Array.isArray(state?.completedSteps)
+        ? state.completedSteps
+        : [],
+      skippedSteps: Array.isArray(state?.skippedSteps)
+        ? state.skippedSteps
+        : [],
+      isCompleted: state?.isCompleted === true,
+    };
   }
 }
