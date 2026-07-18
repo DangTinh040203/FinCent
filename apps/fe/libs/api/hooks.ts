@@ -5,6 +5,7 @@ import {
   type TransactionListQuery,
 } from '@repo/shared';
 import {
+  keepPreviousData,
   useInfiniteQuery,
   useMutation,
   useQuery,
@@ -47,6 +48,7 @@ export function useAccounts(includeArchived = false) {
   return useQuery({
     queryKey: queryKeys.accounts(includeArchived),
     queryFn: () => api.accounts.list(includeArchived),
+    placeholderData: keepPreviousData,
   });
 }
 
@@ -66,6 +68,7 @@ export function useTransactions(query: TransactionListQuery) {
       api.transactions.list({ ...query, cursor: pageParam ?? undefined }),
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
+    placeholderData: keepPreviousData,
   });
 }
 
