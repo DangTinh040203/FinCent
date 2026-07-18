@@ -1,0 +1,62 @@
+enum RecurringCadence {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum RecurringOccurrenceStatus {
+  PROJECTED
+  DUE
+  CONFIRMED
+  SKIPPED
+}
+
+model RecurringRule {
+  id          String           @id @default(uuid())
+  userId      String
+  name        String
+  accountId   String
+  categoryId  String
+  type        CategoryType
+  amount      BigInt
+  currency    String
+  cadence     RecurringCadence
+  interval    Int              @default(1)
+  nextDueAt   DateTime
+  endsAt      DateTime?
+  autoConfirm Boolean          @default(false)
+  isPaused    Boolean          @default(false)
+  isEssential Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account     Account               @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  category    Category              @relation(fields: [categoryId], references: [id])
+  occurrences RecurringOccurrence[]
+
+  @@index([userId])
+  @@index([isPaused, nextDueAt])
+  @@map("recurring_rules")
+}
+
+model RecurringOccurrence {
+  id            String                    @id @default(uuid())
+  ruleId        String
+  userId        String
+  dueAt         DateTime
+  status        RecurringOccurrenceStatus @default(PROJECTED)
+  amount        BigInt
+  transactionId String?                   @unique
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+
+  rule        RecurringRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+  transaction Transaction?  @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+
+  @@unique([ruleId, dueAt])
+  @@index([userId, dueAt])
+  @@index([userId, status])
+  @@map("recurring_occurrences")
+}

@@ -1,11 +1,11 @@
 import { type Metadata } from 'next';
 
-import { PagePlaceholder } from '@/components/admin/page-placeholder';
+import { ScenariosView } from '@/app/(admin)/scenarios/scenarios-view';
 
 export const metadata: Metadata = {
   title: 'Can I afford it? · FinCent',
 };
 
 export default function ScenariosPage() {
-  return <PagePlaceholder href='/scenarios' />;
+  return <ScenariosView />;
 }

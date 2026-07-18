@@ -1,11 +1,16 @@
 import { type Metadata } from 'next';
+import { Suspense } from 'react';
 
-import { PagePlaceholder } from '@/components/admin/page-placeholder';
+import { TransactionsView } from '@/app/(admin)/transactions/transactions-view';
 
 export const metadata: Metadata = {
   title: 'Transactions · FinCent',
 };
 
 export default function TransactionsPage() {
-  return <PagePlaceholder href='/transactions' />;
+  return (
+    <Suspense>
+      <TransactionsView />
+    </Suspense>
+  );
 }

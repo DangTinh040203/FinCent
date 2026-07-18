@@ -6,6 +6,7 @@ import { ThemeProvider } from '@repo/ui/components/theme-provider';
 import { type Metadata } from 'next';
 import { type ReactNode } from 'react';
 
+import { AppProviders } from '@/components/providers/app-providers';
 import { fontVariables } from '@/configs/font.config';
 
 export const metadata: Metadata = {
@@ -29,7 +30,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             disableTransitionOnChange
           >
             <Toaster richColors />
-            {children}
+            <AppProviders>{children}</AppProviders>
           </ThemeProvider>
         </body>
       </html>

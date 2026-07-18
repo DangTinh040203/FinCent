@@ -1,0 +1,41 @@
+enum TransactionType {
+  INCOME
+  EXPENSE
+  TRANSFER
+}
+
+enum TransactionSource {
+  MANUAL
+  AI_DRAFT
+  RECURRING
+  IMPORT
+}
+
+model Transaction {
+  id               String            @id @default(uuid())
+  userId           String
+  accountId        String
+  categoryId       String?
+  counterAccountId String?
+  type             TransactionType
+  amount           BigInt
+  currency         String
+  occurredAt       DateTime
+  note             String?
+  source           TransactionSource @default(MANUAL)
+  deletedAt        DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  user                User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account             Account              @relation("AccountTransactions", fields: [accountId], references: [id], onDelete: Cascade)
+  counterAccount      Account?             @relation("CounterAccountTransactions", fields: [counterAccountId], references: [id])
+  category            Category?            @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  recurringOccurrence RecurringOccurrence?
+  goalContribution    GoalContribution?
+
+  @@index([userId, occurredAt])
+  @@index([userId, categoryId])
+  @@index([accountId])
+  @@map("transactions")
+}

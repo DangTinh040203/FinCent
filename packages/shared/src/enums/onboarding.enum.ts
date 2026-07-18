@@ -1,0 +1,6 @@
+export enum OnboardingStep {
+  PREFERENCES = 'PREFERENCES',
+  ACCOUNTS = 'ACCOUNTS',
+  RECURRING = 'RECURRING',
+  GOAL = 'GOAL',
+}

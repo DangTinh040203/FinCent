@@ -1,4 +1,9 @@
 import {
+  type OnboardingStateDto,
+  type UpdateUserSettingsPayload,
+} from '@repo/shared';
+
+import {
   type CreateUserCommand,
   type UpdateUserCommand,
 } from '@/modules/user/application/commands';
@@ -13,4 +18,6 @@ export interface IUserRepository {
   findByProviderId(providerId: string): Promise<User | null>;
   delete(id: string): Promise<void>;
   update(id: string, payload: UpdateUserCommand): Promise<User>;
+  updateSettings(id: string, payload: UpdateUserSettingsPayload): Promise<User>;
+  updateOnboardingState(id: string, state: OnboardingStateDto): Promise<User>;
 }

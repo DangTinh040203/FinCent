@@ -1,3 +1,8 @@
+import {
+  type OnboardingStateDto,
+  type UserSettingsDto,
+} from '@repo/shared';
+
 export class User {
   id: string;
   providerId: string;
@@ -7,6 +12,12 @@ export class User {
   firstName: string | null;
   lastName: string | null;
   avatar: string | null;
+
+  displayCurrency: string;
+  safetyBuffer: number;
+  cycleStartDay: number;
+  aiConsent: boolean;
+  onboardingState: OnboardingStateDto | null;
 
   createdAt: Date;
   updatedAt: Date;
@@ -24,5 +35,24 @@ export class User {
 
   get isProfileComplete(): boolean {
     return !!(this.firstName && this.lastName && this.avatar);
+  }
+
+  toSettingsDto(): UserSettingsDto {
+    return {
+      displayCurrency: this.displayCurrency,
+      safetyBuffer: this.safetyBuffer,
+      cycleStartDay: this.cycleStartDay,
+      aiConsent: this.aiConsent,
+    };
+  }
+
+  toOnboardingDto(): OnboardingStateDto {
+    return (
+      this.onboardingState ?? {
+        completedSteps: [],
+        skippedSteps: [],
+        isCompleted: false,
+      }
+    );
   }
 }

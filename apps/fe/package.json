@@ -14,12 +14,18 @@
   "dependencies": {
     "@clerk/nextjs": "^6.36.5",
     "@clerk/shared": "^4.3.0",
+    "@hookform/resolvers": "^5.4.0",
+    "@repo/shared": "workspace:*",
     "@repo/ui": "workspace:*",
     "@t3-oss/env-nextjs": "^0.13.8",
+    "@tanstack/react-query": "^5.101.2",
     "lucide-react": "^0.475.0",
     "next": "16.2.9",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
+    "react-hook-form": "^7.81.0",
+    "recharts": "3.8.0",
+    "sonner": "^2.0.7",
     "zod": "^4.4.3"
   },
   "devDependencies": {

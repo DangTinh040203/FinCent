@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { findAdminNavItem } from '@/components/admin/nav';
+import { NotificationBell } from '@/components/admin/notification-bell';
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -58,7 +59,8 @@ export function SiteHeader() {
           )}
         </BreadcrumbList>
       </Breadcrumb>
-      <div className='ml-auto'>
+      <div className='ml-auto flex items-center gap-1'>
+        <NotificationBell />
         <ThemeSelect />
       </div>
     </header>

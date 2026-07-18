@@ -1,0 +1,25 @@
+enum BudgetPeriodType {
+  MONTHLY
+  WEEKLY
+}
+
+model Budget {
+  id         String           @id @default(uuid())
+  userId     String
+  categoryId String
+  amount     BigInt
+  currency   String
+  periodType BudgetPeriodType @default(MONTHLY)
+  startDate  DateTime
+  rollover   Boolean          @default(false)
+  isArchived Boolean          @default(false)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, categoryId, periodType])
+  @@index([userId])
+  @@map("budgets")
+}
